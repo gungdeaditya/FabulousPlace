@@ -10,10 +10,19 @@ import {
 
 const roundedButton = props => {
   const content = (
-    <View style={[styles.button, { backgroundColor: props.color }]}>
-      <Text style={styles.text}>{props.children}</Text>
+    <View
+      style={[
+        styles.button,
+        { backgroundColor: props.color },
+        props.disabled ? styles.disabled : null
+      ]}
+    >
+      <Text style={props.disabled ? styles.disabledText : styles.text}>{props.children}</Text>
     </View>
   );
+  // if(props.disabled){
+  //   return content;
+  // }
   if (Platform.OS === "android") {
     return (
       <TouchableNativeFeedback style={styles.container} onPress={props.onPress}>
@@ -39,7 +48,17 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: "center",
-    color: "white"
+    color: "#fff"
+  },
+  disabled: {
+    padding: 12,
+    margin: 4,
+    borderRadius: 24,
+    backgroundColor: "#bdbdbd",
+  },
+  disabledText: {
+    textAlign: "center",
+    color: "#fff"
   }
 });
 

@@ -1,13 +1,5 @@
 import React, { Component } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  StyleSheet,
-  ScrollView,
-  Image
-} from "react-native";
+import { View, Button, StyleSheet, ScrollView, KeyboardAvoidingView } from "react-native";
 import { connect } from "react-redux";
 import { addPlace } from "../../store/actions/index";
 import PlaceInput from "../../components/PlaceInput/PlaceInput";
@@ -15,10 +7,24 @@ import MainText from "../../components/UI/MainText/MainText";
 import HeadingText from "../../components/UI/HeadingText/HeadingText";
 import PickImage from "../../components/PickImage/PickImage";
 import PickLocation from "../../components/PickLocation/PickLocation";
+import validate from "../../utility/validation";
 
 class SharePlaceScreen extends Component {
+  static navigatorStyle = {
+    navBarButtonColor: "orange"
+  };
+
   state = {
-    placeName: ""
+    controls: {
+      placeName: {
+        value: "",
+        valid: false,
+        touched: false,
+        validationRules: {
+          isNotEmpty: true
+        }
+      }
+    }
   };
 
   constructor(props) {
@@ -37,22 +43,35 @@ class SharePlaceScreen extends Component {
     }
   };
 
-  placeNameChangeHandler = val => {
-    this.setState({
-      placeName: val
+  placeNameChangeHandler = value => {
+    this.setState(prevState => {
+      return {
+        controls: {
+          ...prevState.controls,
+          placeName: {
+            ...prevState.controls.placeName,
+            value: value,
+            valid: validate(
+              value,
+              prevState.controls.placeName.validationRules
+            ),
+            touched: true
+          }
+        }
+      };
     });
   };
 
   placeAddedHandler = () => {
-    if (this.state.placeName.trim() !== "") {
-      this.props.onAddPlace(this.state.placeName);
+    if (this.state.controls.placeName.value.trim() !== "") {
+      this.props.onAddPlace(this.state.controls.placeName.value);
     }
   };
 
   render() {
     return (
       <ScrollView>
-        <View style={styles.container}>
+        <KeyboardAvoidingView behavior="padding" style={styles.container}>
           <MainText>
             <HeadingText>Share a Place with us!</HeadingText>
           </MainText>
@@ -60,14 +79,14 @@ class SharePlaceScreen extends Component {
           <PickLocation />
           <View style={styles.buttonContainer}>
             <PlaceInput
-              placeName={this.state.placeName}
+              placeData={this.state.controls.placeName}
               onChangeText={this.placeNameChangeHandler}
             />
           </View>
           <View style={styles.button}>
-            <Button title="Share the Place" onPress={this.placeAddedHandler} />
+            <Button title="Share the Place" onPress={this.placeAddedHandler} disabled={!this.state.controls.placeName.valid}/>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </ScrollView>
     );
   }
@@ -79,7 +98,7 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   buttonContainer: {
-      width: "80%"
+    width: "80%"
   }
 });
 
