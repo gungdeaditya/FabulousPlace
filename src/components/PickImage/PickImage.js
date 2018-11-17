@@ -24,8 +24,9 @@ class PickImage extends Component {
           }
         });
         this.props.onImagePick({
-          uri: response.uri
-        })
+          uri: response.uri,
+          base64: response.data
+        });
       }
     });
   };
