@@ -35,7 +35,7 @@ const equalToValidator = (val, checkValue) => {
   return val === checkValue;
 };
 
-const isNotEmptyValidator = (val) => {
+const isNotEmptyValidator = val => {
   return val.trim() !== "";
 };
 
