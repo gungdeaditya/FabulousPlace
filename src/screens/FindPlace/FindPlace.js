@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { connect } from "react-redux";
 import { name as appName } from "../../../app.json";
-
+import { getPlace } from '../../store/actions/index';
 import PlaceList from "../../components/PlaceList/PlaceList";
 
 class FindPlaceScreen extends Component {
@@ -25,6 +25,10 @@ class FindPlaceScreen extends Component {
   constructor(props) {
     super(props);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent);
+  }
+
+  componentDidMount() {
+    this.props.onLoadPlace();
   }
 
   onNavigatorEvent = event => {
@@ -141,4 +145,10 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(FindPlaceScreen);
+const mapDispatchToProps = dispatch => {
+  return {
+    onLoadPlace: () => dispatch(getPlace())
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FindPlaceScreen);
